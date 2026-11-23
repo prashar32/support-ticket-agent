@@ -1,5 +1,5 @@
 import pytest
-from fake_helpdesk import FakeHelpdesk
+from fake_helpdesk import FakeHelpdesk, handled_value
 
 from agent.helpdesk import AlreadyHandled, ApiError, OutcomeUnknown, Unavailable, is_handled
 
@@ -45,7 +45,7 @@ def test_429_waits_retry_after():
 
 def test_409_is_not_retried():
     fake = FakeHelpdesk()
-    fake.handled["T001"] = {"action": "reply", "body": {}}
+    fake.handled["T001"] = handled_value("reply")
     with pytest.raises(AlreadyHandled):
         fake.client().post_decision("T001", "handoff", BODY)
     assert fake.posts("T001") == 1
@@ -72,7 +72,7 @@ def test_post_lost_before_save_is_resent_after_check():
     fake = FakeHelpdesk()
     fake.fault("POST", "/tickets/T001/handoff", "timeout_before")
     fake.client().post_decision("T001", "handoff", BODY)
-    assert fake.handled["T001"]["body"] == BODY
+    assert fake.sent["T001"] == BODY
     assert fake.posts("T001") == 2  # one lost, one saved
     assert fake.statuses[409] == 0
 

@@ -7,6 +7,7 @@ It behaves like the real API (pagination, 409 on a second answer, 422 with `prob
 import json
 import random
 from collections import Counter, deque
+from datetime import UTC, datetime
 
 import httpx
 
@@ -51,7 +52,8 @@ def make_ticket(i: int) -> dict:
 class FakeHelpdesk:
     def __init__(self, n: int = 30, p503: float = 0.0, seed: int = 0, clock: FakeClock | None = None):
         self.tickets = {t["id"]: t for t in (make_ticket(i) for i in range(1, n + 1))}
-        self.handled: dict[str, dict] = {}  # ticket id -> {"action": ..., "body": ...}
+        self.handled: dict[str, dict] = {}  # ticket id -> {"at": ..., "action": ...}, the live shape
+        self.sent: dict[str, dict] = {}  # ticket id -> the body that was accepted (for assertions)
         self.clock = clock or FakeClock()
         self.p503, self.rng = p503, random.Random(seed)
         self.faults: dict[tuple[str, str], list[str]] = {}
@@ -83,7 +85,7 @@ class FakeHelpdesk:
         if fault == "timeout_before":
             raise httpx.ConnectTimeout("connect timeout", request=request)
         if fault == "already_handled":  # someone else answered it a moment ago
-            self.handled[path.split("/")[2]] = {"action": "reply", "body": {}}
+            self.handled[path.split("/")[2]] = handled_value("reply")
 
         resp = self._serve(request, method, path, fault)
         self.statuses[resp.status_code] += 1
@@ -153,8 +155,14 @@ class FakeHelpdesk:
             problems.append(f"{NEEDS[action]} is required for {action}")
         if problems:
             return _json(422, {"error": "validation_failed", "problems": problems})
-        self.handled[ticket_id] = {"action": action, "body": body}
+        self.handled[ticket_id] = handled_value(action)
+        self.sent[ticket_id] = body
         return _json(200, {"ok": True, "id": ticket_id, "action": action})
+
+
+def handled_value(action: str) -> dict:
+    """What live GET /tickets/{id} shows in "handled" once a ticket is handled (null while open)."""
+    return {"at": datetime.now(UTC).isoformat(timespec="seconds"), "action": action}
 
 
 def _json(status: int, data: dict, headers: dict | None = None) -> httpx.Response:

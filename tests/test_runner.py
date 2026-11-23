@@ -116,7 +116,7 @@ def test_crash_between_decide_and_post(setup, monkeypatch):
 
     runner.run(fake.client(), db, decide, log)  # restart
     assert_one_answer_each(fake, decide)
-    assert fake.handled["T010"]["body"] == stored["payload"]  # same stored decision was sent
+    assert fake.sent["T010"] == stored["payload"]  # same stored decision was sent
 
 
 def test_crash_during_post_before_it_was_saved(setup):
@@ -129,7 +129,7 @@ def test_crash_during_post_before_it_was_saved(setup):
 
     runner.run(fake.client(), db, decide, log)  # restart: GET says not handled -> resend
     assert_one_answer_each(fake, decide)
-    assert fake.handled["T012"]["body"] == stored["payload"]
+    assert fake.sent["T012"] == stored["payload"]
 
 
 def test_crash_between_post_and_journal_update(setup):

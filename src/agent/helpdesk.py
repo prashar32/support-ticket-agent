@@ -49,7 +49,8 @@ class ApiError(HelpdeskError):
 def is_handled(ticket: dict) -> bool:
     """True if GET /tickets/{id} shows the ticket already has a decision.
 
-    Seen live: an open ticket has "handled": null. A handled one has a non-empty value there.
+    Confirmed live: an open ticket has "handled": null; a handled one has a dict with string keys
+    "at" (timestamp) and "action" (reply / handoff / close).
     """
     return bool(ticket.get("handled"))
 
