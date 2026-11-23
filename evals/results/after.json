@@ -35,9 +35,9 @@
       "category": {
         "mean": 0.933,
         "per_run": [
+          1.0,
           0.9,
-          0.9,
-          1.0
+          0.9
         ]
       },
       "priority": {
@@ -58,25 +58,25 @@
       }
     },
     "reply_quality": {
-      "mean_all_yes": 0.667,
+      "mean_all_yes": 1.0,
       "per_run": [
-        0.67,
-        0.67,
-        0.67
+        1.0,
+        1.0,
+        1.0
       ],
       "judged": 18,
       "not_judged": 0,
-      "answers_question": 0.833,
+      "answers_question": 1.0,
       "faq_only": 1.0,
-      "polite_complete": 0.833
+      "polite_complete": 1.0
     },
     "agent_tokens": {
-      "input": 127653,
-      "output": 22448
+      "input": 128403,
+      "output": 21582
     },
-    "agent_cost_usd": 0.02399,
-    "agent_cost_per_100_tickets_usd": 0.08,
-    "judge_cost_usd": 0.04044
+    "agent_cost_usd": 0.02363,
+    "agent_cost_per_100_tickets_usd": 0.0788,
+    "judge_cost_usd": 0.04647
   },
   "labels": {
     "E01": {
@@ -174,24 +174,24 @@
         "faq_ids": [
           "F12"
         ],
-        "reason": "The customer's app crashes on an iPhone running iOS 15, which is below the app's stated iOS 16 minimum, so the help centre entry F12 answers the problem. One customer is blocked, so the priority is P2.",
-        "draft_reply": "Hello, thank you for contacting us. The Roosterly app works on iOS 16 and later and Android 10 and later. Your iPhone 8 is running iOS 15, which is below the required version, so the app may not run on it. Kind regards, the Roosterly support team",
-        "backtranslation": "Hello, thank you for contacting us. The Roosterly app works on iOS 16 and later and Android 10 and later. Your iPhone 8 is running iOS 15, which is below the required version, so the app may not run on it. Kind regards, the Roosterly support team",
+        "reason": "The customer reports the app crashes at once on an iPhone 8 running iOS 15. F12 states the app requires iOS 16 or later, so the device falls below the requirement and the reply can point to it. Priority is P2 because one customer is blocked.",
+        "draft_reply": "Hello,\n\nThank you for contacting us. The Roosterly app works on iOS 16 and later and on Android 10 and later. Your iPhone 8 is running iOS 15, which is below the required version, so the app may not run on it. Updating to iOS 16 or later is needed to use the app.\n\nKind regards,\nThe Roosterly support team",
+        "backtranslation": "Hello,\n\nThank you for contacting us. The Roosterly app works on iOS 16 and later and on Android 10 and later. Your iPhone 8 is running iOS 15, which is below the required version, so the app may not run on it. Updating to iOS 16 or later is needed to use the app.\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4256,
-          1141
+          4281,
+          948
         ],
-        "cost_usd": 0.000996,
+        "cost_usd": 0.000902,
         "judge": {
           "judged": true,
           "answers_question": true,
           "faq_only": true,
-          "polite_complete": false,
-          "comment": "It explains the iOS 16 requirement but never tells the customer what to do next, such as updating iOS if possible (iPhone 8 may support iOS 16) or using another device, so it is not complete.",
+          "polite_complete": true,
+          "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.0026
+          "cost_usd": 0.00548
         }
       },
       {
@@ -216,16 +216,16 @@
         "faq_ids": [
           "F06"
         ],
-        "reason": "Billing question about updating the company VAT number, which the help centre answers under Company details for future invoices. No always-human topic applies and there is no urgency.",
-        "draft_reply": "Hallo, bedankt voor uw bericht. U kunt het btw-nummer wijzigen onder Instellingen → Bedrijfsgegevens (Settings → Company details). Het nieuwe btw-nummer wordt gebruikt voor toekomstige facturen. Met vriendelijke groet, het Roosterly supportteam",
-        "backtranslation": "Hello, thank you for your message. You can change the VAT number under Settings → Company details (Instellingen → Bedrijfsgegevens). The new VAT number will be used for future invoices. Kind regards, the Roosterly support team",
+        "reason": "The customer asks to put a changed VAT number on their invoices. F06 says the VAT number for future invoices can be changed under Instellingen → Bedrijfsgegevens, so no human is needed. It is a how-to request with no urgency, so P4.",
+        "draft_reply": "Beste klant,\n\nBedankt voor uw bericht. U kunt het nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. De wijziging geldt voor toekomstige facturen.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Dear customer,\n\nThank you for your message. You can change the VAT number yourself under Settings → Company details. The change applies to future invoices.\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4267,
-          1024
+          4292,
+          1057
         ],
-        "cost_usd": 0.000939,
+        "cost_usd": 0.000958,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -233,7 +233,7 @@
           "polite_complete": true,
           "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002118
+          "cost_usd": 0.00209
         }
       },
       {
@@ -261,16 +261,16 @@
           "refund"
         ],
         "faq_ids": [],
-        "reason": "The customer asks for a refund of a month's fees, which is an always-human topic. Money is involved, so priority is P2.",
+        "reason": "The customer asks for a refund of a month's subscription, which is an always-human topic. The help centre has no refund entry.",
         "draft_reply": null,
         "backtranslation": "",
-        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: refund. Customer on the Basis plan (email) asks for a refund of the month of August, when their restaurant was closed for renovation. Refunds always go to a human. Check the billing history and the refund request against the company's policy before replying.",
+        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: refund. Customer on the Basis plan asks for a refund for August because the restaurant was closed for renovation that month. Refunds always go to a human. Check the account's billing history and the subscription status before replying.",
         "model": "claude-haiku-5-5",
         "tokens": [
-          4264,
-          225
+          4289,
+          216
         ],
-        "cost_usd": 0.000539
+        "cost_usd": 0.000537
       },
       {
         "id": "E04",
@@ -294,16 +294,16 @@
         "faq_ids": [
           "F03"
         ],
-        "reason": "The customer asks how to swap a shift with a colleague, which is a how-to question fully answered by F03. No always-human topic applies, so a reply is appropriate.",
-        "draft_reply": "Hallo, je ruilt een dienst door de dienst in de app te openen en op \"Ruil aanbieden\" (Offer swap) te tikken. Collega's met dezelfde functie kunnen de ruil accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken (Rota → Requests). Goedkeuring door de manager staat standaard aan. Veel plezier met het plannen!\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello, you swap a shift by opening the shift in the app and tapping \"Ruil aanbieden\" (Offer swap). Colleagues with the same role can accept the swap. Afterwards your manager approves the swap under Rooster → Verzoeken (Rota → Requests). Manager approval is on by default. Have fun planning!\n\nKind regards,\nThe Roosterly support team",
+        "reason": "A how-to question about swapping shifts, fully answered by F03. No always-human topic applies, and the single part has a complete entry.",
+        "draft_reply": "Beste klant,\n\nUw collega kan een dienst ruilen via de app. Open de dienst in de app en tik op \"Ruil aanbieden\" (Offer swap). Collega's met dezelfde functie kunnen de ruil accepteren. Daarna keurt de manager de ruil goed onder Rooster → Verzoeken (Rota → Requests).\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Dear customer,\n\nYour colleague can swap a shift via the app. Open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). Colleagues with the same role can accept the swap. Afterwards the manager approves the swap under Rooster → Verzoeken (Rota → Requests).\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4248,
-          1236
+          4273,
+          501
         ],
-        "cost_usd": 0.001043,
+        "cost_usd": 0.000678,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -311,7 +311,7 @@
           "polite_complete": true,
           "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002206
+          "cost_usd": 0.002192
         }
       },
       {
@@ -336,16 +336,16 @@
         "faq_ids": [
           "F10"
         ],
-        "reason": "The customer asks for a Google Calendar integration, which the help centre does not offer. F10 explains how feature requests are handled (public roadmap, voting, no delivery dates), so the request can be answered without a human; priority is low because it is an idea, not a blocker.",
-        "draft_reply": "Beste klant, bedankt voor uw suzggestie voor een koppeling met Google Agenda. Wij lezen elk idee. Feature requests worden geplaatst op onze openbare roadmap op roadmap.roosterly.nl, waar u op ideeën kunt stemmen. Voor individuele verzoeken kunnen wij helaas geen leveringsdatum toezeggen. Met vriendelijke groet, het Roosterly supportteam",
-        "backtranslation": "Dear customer, thank you for your suggestion for an integration with Google Calendar. We read every idea. Feature requests are placed on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately, we cannot promise a delivery date for individual requests. Kind regards, the Roosterly support team",
+        "reason": "The customer asks for a Google Calendar integration, which the help centre does not offer. F10 explains how feature requests are handled, so it answers this request without a human. Low urgency, so P4.",
+        "draft_reply": "Hoi,\n\nBedankt voor je idee over een koppeling met Google Agenda. We lezen elk idee. Verzoeken voor nieuwe functies worden op ons publieke roadmap gezet op roadmap.roosterly.nl, waar je op ideeën kunt stemmen. Voor individuele verzoeken kunnen we helaas geen leverdatum toezeggen.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Hi,\n\nThank you for your idea about an integration with Google Calendar. We read every idea. Feature requests are placed on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately, we cannot promise a delivery date for individual requests.\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4248,
-          1116
+          4273,
+          1071
         ],
-        "cost_usd": 0.000983,
+        "cost_usd": 0.000963,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -376,16 +376,16 @@
         "failed_checks": [],
         "flags": [],
         "faq_ids": [],
-        "reason": "The customer gets a 'Something went wrong' error when publishing a rota, so staff cannot see next week's schedule. No help centre entry covers publishing rotas or this error, so a human must diagnose it.",
+        "reason": "Publishing the rota fails with 'Something went wrong', which is a bug the help centre does not cover. No entry explains how to fix it, so a human must check it.",
         "draft_reply": null,
         "backtranslation": "",
-        "handoff_note": "Customer on the Plus plan reports that clicking Publish on the rota shows 'Something went wrong', and next week's rota is not visible to staff. The help centre has no entry for publishing rotas or this error. Please check the account and logs for the publish failure and advise the customer.",
+        "handoff_note": "Customer on the Plus plan reports that clicking Publish gives 'Something went wrong' and next week's rota is not visible to staff. The help centre has no entry for publishing rotas. Check the account and logs for the publish error and whether the rota was saved, then advise the customer.",
         "model": "claude-haiku-5-5",
         "tokens": [
-          4259,
-          490
+          4284,
+          418
         ],
-        "cost_usd": 0.000671
+        "cost_usd": 0.000637
       },
       {
         "id": "E07",
@@ -409,16 +409,16 @@
         "faq_ids": [
           "F05"
         ],
-        "reason": "A billing question about the Plus price, answered directly by F05 (EUR 6 per active employee per month, so 25 employees is EUR 150 per month excluding VAT). No urgency and no always-human topic applies.",
-        "draft_reply": "Hallo,\n\nBedankt voor uw vraag. Plus kost €6 per actieve medewerker per maand, dus voor 25 medewerkers komt dat neer op €150 per maand excl. btw. Plus bevat onbeperkt aantal vestigingen, API-toegang en de salarisintegraties. U kunt op elk moment upgraden via Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur.\n\nFijne dag gewenst.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello,\n\nThank you for your question. Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month excluding VAT. Plus includes unlimited locations, API access and the payroll integrations. You can upgrade at any time via Settings → Subscription (Instellingen → Abonnement); the new price applies from the next invoice.\n\nHave a nice day.\n\nKind regards,\nThe Roosterly support team",
+        "reason": "A billing question about the Plus price, fully answered by F05 (EUR 6 per active employee per month, excluding VAT), so 25 employees comes to EUR 150 per month excluding VAT. No urgency and no contract change is requested, so it is a P4 reply.",
+        "draft_reply": "Hallo, dank u wel voor uw vraag. Plus kost €6 per actieve medewerker per maand, exclusief btw. Voor 25 medewerkers komt dat neer op €150 per maand, exclusief btw. Plus biedt onbeperkt aantal vestigingen, API-toegang en de salarisintegraties. U kunt upgraden via Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur. Met vriendelijke groet, Het Roosterly supportteam",
+        "backtranslation": "Hello, thank you very much for your question. Plus costs €6 per active employee per month, excluding VAT. For 25 employees this comes to €150 per month, excluding VAT. Plus includes an unlimited number of locations, API access and the payroll integrations. You can upgrade via Instellingen → Abonnement (Settings → Subscription); the new price applies from the next invoice. Kind regards, The Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4247,
-          1442
+          4272,
+          1743
         ],
-        "cost_usd": 0.001146,
+        "cost_usd": 0.001299,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -426,7 +426,7 @@
           "polite_complete": true,
           "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.00222
+          "cost_usd": 0.002214
         }
       },
       {
@@ -451,16 +451,16 @@
           "spam"
         ],
         "faq_ids": [],
-        "reason": "The ticket is an unrelated investment advertisement, which is spam, so it is closed without a reply. No help centre entry applies.",
+        "reason": "The ticket is an unrelated investment advertisement (spam), so it is closed without a reply. It is categorised as other because it is not a product question.",
         "draft_reply": null,
         "backtranslation": "",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4252,
-          178
+          4277,
+          205
         ],
-        "cost_usd": 0.000514
+        "cost_usd": 0.00053
       },
       {
         "id": "E09",
@@ -487,28 +487,28 @@
           "personal_data"
         ],
         "faq_ids": [],
-        "reason": "This is a personal data request (AVG), which is always a human task under the client rules. The help centre has no entry that fulfils an access request, so it goes to a human.",
+        "reason": "A personal data request (AVG) is always a human case under client rules, so the ticket is handed off. The help centre has no entry for handling data access requests.",
         "draft_reply": null,
         "backtranslation": "",
-        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: personal_data. Customer (Plus plan, email) requests access to all personal data Roosterly holds about them under the AVG (GDPR). This is an always-human topic. Verify the requester's identity and process the access request under your data procedure; the help centre only states where data is stored (F09) and does not cover access requests.",
+        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: personal_data. Customer (Plus plan, email) requests access to all personal data Roosterly stores about them under the AVG (GDPR). This is a client always-human topic. Verify the requester's identity and handle the data access request through the proper privacy process; the help centre has no entry for it.",
         "model": "claude-haiku-5-5",
         "tokens": [
-          4266,
-          272
+          4291,
+          264
         ],
-        "cost_usd": 0.000563
+        "cost_usd": 0.000561
       },
       {
         "id": "E10",
         "got": {
           "action": "reply",
-          "category": "other",
+          "category": "question",
           "priority": "P4",
           "language": "nl"
         },
         "match": {
           "action": true,
-          "category": false,
+          "category": true,
           "priority": true,
           "language": true
         },
@@ -520,24 +520,24 @@
         "faq_ids": [
           "F11"
         ],
-        "reason": "The customer asks whether maintenance is planned tonight. F11 says current outages and planned maintenance are listed on status.roosterly.nl, so this is answered with a reply and no urgency.",
-        "draft_reply": "Hallo,\n\nBedankt voor je bericht. Geplande onderhoudswerkzaamheden en actuele storingen vind je op status.roosterly.nl. Daar staat de meest recente informatie.\n\nFijne dag verder!\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello,\n\nThank you for your message. Planned maintenance work and current outages can be found at status.roosterly.nl. That page has the most recent information.\n\nHave a nice day!\n\nKind regards,\nThe Roosterly support team",
+        "reason": "The customer asks whether maintenance is planned tonight, a general how-to-find-information question with no urgency. FAQ F11 says current outages and planned maintenance are listed on status.roosterly.nl, which fully answers it, so no handoff is needed.",
+        "draft_reply": "Hallo, bedankt voor je bericht. Actuele storingen en gepland onderhoud vind je op status.roosterly.nl. Daar kun je zien of er vanavond onderhoud gepland staat. Met vriendelijke groet, het Roosterly supportteam",
+        "backtranslation": "Hello, thank you for your message. Current outages and planned maintenance can be found at status.roosterly.nl. There you can see whether maintenance is planned for tonight. Kind regards, the Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4244,
-          859
+          4269,
+          915
         ],
-        "cost_usd": 0.000854,
+        "cost_usd": 0.000884,
         "judge": {
           "judged": true,
-          "answers_question": false,
+          "answers_question": true,
           "faq_only": true,
           "polite_complete": true,
-          "comment": "The reply does not say whether maintenance is planned tonight, but it correctly points to status.roosterly.nl, the only source the FAQ provides, so the customer can check there.",
+          "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002436
+          "cost_usd": 0.001908
         }
       }
     ],
@@ -564,24 +564,24 @@
         "faq_ids": [
           "F12"
         ],
-        "reason": "The customer reports the app crashing on an iPhone running iOS 15. The help centre states the app requires iOS 16 or later, so the ticket falls under that requirement and a reply fully answers it. The customer is blocked, so P2.",
-        "draft_reply": "Hello, thank you for your message about the app crashing on your iPhone 8. The Roosterly mobile app works on iOS 16 and later and Android 10 and later. Your iPhone is running iOS 15, which is below this requirement. We hope this helps.\nKind regards, the Roosterly support team",
-        "backtranslation": "Hello, thank you for your message about the app crashing on your iPhone 8. The Roosterly mobile app works on iOS 16 and later and Android 10 and later. Your iPhone is running iOS 15, which is below this requirement. We hope this helps.\nKind regards, the Roosterly support team",
+        "reason": "The app crashes immediately for one customer on iOS 15, and the help centre states the app requires iOS 16 or later, so the customer does not meet that requirement. No payment, security or account issue is involved, so a reply based on F12 is appropriate.",
+        "draft_reply": "Hello,\n\nThank you for contacting us about the app crashing on your iPhone. The Roosterly app works on iOS 16 and later, and your iPhone 8 is running iOS 15. Please update your iPhone to iOS 16 or later, then open the app again.\n\nKind regards,\nThe Roosterly support team",
+        "backtranslation": "Hello,\n\nThank you for contacting us about the app crashing on your iPhone. The Roosterly app works on iOS 16 and later, and your iPhone 8 is running iOS 15. Please update your iPhone to iOS 16 or later, then open the app again.\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4256,
-          1374
+          4281,
+          967
         ],
-        "cost_usd": 0.001113,
+        "cost_usd": 0.000912,
         "judge": {
           "judged": true,
           "answers_question": true,
           "faq_only": true,
-          "polite_complete": false,
-          "comment": "It explains the likely cause (iOS 15 is below the iOS 16 requirement) but gives no next step, such as updating iOS if the iPhone 8 supports it, or what to do if it can't.",
+          "polite_complete": true,
+          "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002634
+          "cost_usd": 0.005282
         }
       },
       {
@@ -606,16 +606,16 @@
         "faq_ids": [
           "F06"
         ],
-        "reason": "The customer asks to update their VAT number on invoices. F06 explains how to change company details, including the VAT number, for future invoices, so this is a no-urgency billing how-to that can be answered without a human.",
-        "draft_reply": "Hallo,\n\nBedankt voor uw bericht. U kunt het nieuwe btw-nummer zelf wijzigen onder Instellingen → Bedrijfsgegevens (Settings → Company details). Het gewijzigde btw-nummer wordt gebruikt voor toekomstige facturen.\n\nFijne dag gewenst.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello,\n\nThank you for your message. You can change the new VAT number yourself under Settings → Company details (Instellingen → Bedrijfsgegevens). The changed VAT number is used for future invoices.\n\nHave a nice day.\n\nKind regards,\nThe Roosterly support team",
+        "reason": "The customer asks to update their VAT number on invoices. F06 explains that the VAT number can be changed under Instellingen → Bedrijfsgegevens for future invoices, which fully answers the request. No urgency and no always-human topic applies.",
+        "draft_reply": "Hallo, je kunt je nieuwe btw-nummer zelf aanpassen via Instellingen → Bedrijfsgegevens. De wijziging geldt voor toekomstige facturen. Met vriendelijke groet, het Roosterly-supportteam",
+        "backtranslation": "Hello, you can change your new VAT number yourself via Settings → Company details. The change applies to future invoices. Kind regards, the Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4267,
-          1212
+          4292,
+          1295
         ],
-        "cost_usd": 0.001033,
+        "cost_usd": 0.001077,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -623,7 +623,7 @@
           "polite_complete": true,
           "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.00215
+          "cost_usd": 0.002066
         }
       },
       {
@@ -651,16 +651,16 @@
           "refund"
         ],
         "faq_ids": [],
-        "reason": "The customer asks for a refund of a month's subscription, which is an always-human topic. The help centre has no refund entry, so a human must decide.",
+        "reason": "The customer asks for a refund of a month's subscription, which is an always-human topic. Refunds are not covered by the help centre, so this goes to a human.",
         "draft_reply": null,
         "backtranslation": "",
-        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: refund. Customer on the Basis plan (email) asks for a refund of the month of August, when their restaurant was closed for renovation. Refunds are always handled by a human. Check the billing history and the customer's eligibility for a refund before replying.",
+        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: refund. Customer on the Basis plan asks for a refund for August because the restaurant was closed for renovation that month. Refunds are always handled by a human. Check the subscription and invoice history for August and decide on the refund request.",
         "model": "claude-haiku-5-5",
         "tokens": [
-          4264,
-          235
+          4289,
+          233
         ],
-        "cost_usd": 0.000544
+        "cost_usd": 0.000545
       },
       {
         "id": "E04",
@@ -684,406 +684,16 @@
         "faq_ids": [
           "F03"
         ],
-        "reason": "A how-to question about swapping shifts, fully answered by F03. No always-human topic applies, and the single part is covered.",
-        "draft_reply": "Hallo,\n\nJe opent de dienst in de app en tikt op \"Ruil aanbieden\" (Offer swap). Collega's met dezelfde functie kunnen de ruil accepteren. Daarna keurt de manager de ruil goed onder Rooster → Verzoeken (Rota → Requests).\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello,\n\nYou open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). Colleagues with the same role can accept the swap. The manager then approves the swap under Rooster → Verzoeken (Rota → Requests).\n\nKind regards,\nThe Roosterly support team",
+        "reason": "A how-to question about swapping shifts, fully answered by F03. No always-human topic applies, so the ticket gets a reply.",
+        "draft_reply": "Hallo,\n\nJe kunt een dienst ruilen via de app. Open de dienst in de app en tik op \"Ruil aanbieden\" (Offer swap). Collega's met dezelfde functie kunnen de ruil accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken (Rota → Requests).\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Hello,\n\nYou can swap a shift via the app. Open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). Colleagues with the same role can accept the swap. Afterwards your manager approves the swap under Rooster → Verzoeken (Rota → Requests).\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4248,
-          460
+          4273,
+          489
         ],
-        "cost_usd": 0.000655,
-        "judge": {
-          "judged": true,
-          "answers_question": true,
-          "faq_only": true,
-          "polite_complete": true,
-          "comment": "ok",
-          "model": "claude-sonnet-5-5",
-          "cost_usd": 0.00215
-        }
-      },
-      {
-        "id": "E05",
-        "got": {
-          "action": "reply",
-          "category": "feature_request",
-          "priority": "P4",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "reply",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [
-          "F10"
-        ],
-        "reason": "The customer asks for a Google Calendar integration, which the app does not offer. F10 explains how feature requests are handled, so a reply fully answers it; there is no urgency and no account or data is needed.",
-        "draft_reply": "Hallo,\n\nBedankt voor je idee voor een koppeling met Google Agenda. We lezen elk idee. Feature requests zetten we op ons publieke roadmap op roadmap.roosterly.nl, waar je op ideeën kunt stemmen. Een leverdatum voor een specifiek verzoek kunnen we helaas niet toezeggen.\n\nMet vriendelijke groet,\nHet Roosterly-supportteam",
-        "backtranslation": "Hello,\n\nThank you for your idea for an integration with Google Calendar. We read every idea. Feature requests go on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately we cannot promise a delivery date for a specific request.\n\nKind regards,\nThe Roosterly support team",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4248,
-          1144
-        ],
-        "cost_usd": 0.000997,
-        "judge": {
-          "judged": true,
-          "answers_question": true,
-          "faq_only": true,
-          "polite_complete": true,
-          "comment": "ok",
-          "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002074
-        }
-      },
-      {
-        "id": "E06",
-        "got": {
-          "action": "handoff",
-          "category": "bug",
-          "priority": "P2",
-          "language": "en"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "handoff",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [],
-        "reason": "The customer gets an error when publishing the rota, and the help centre has no entry on publishing or this error. Diagnosing it needs account data or logs, so a human should handle it. Staff cannot see next week's rota, which blocks one customer.",
-        "draft_reply": null,
-        "backtranslation": "",
-        "handoff_note": "Customer on Plus plan (email) gets 'Something went wrong' when clicking Publish, so next week's rota is not visible to staff. The help centre has no entry covering publishing or this error. Check the account's rota and logs for the publish failure, and confirm whether the rota is visible to staff after a fix.",
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4259,
-          493
-        ],
-        "cost_usd": 0.000672
-      },
-      {
-        "id": "E07",
-        "got": {
-          "action": "reply",
-          "category": "billing",
-          "priority": "P4",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "reply",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [
-          "F05"
-        ],
-        "reason": "A billing question about the Plus price, fully answered by F05 (EUR 6 per active employee per month, excluding VAT), multiplied by the 25 employees the customer gave. No urgency and no always-human topic, so it is a reply.",
-        "draft_reply": "Hallo, Het Plus-abonnement kost €6 per actieve medewerker per maand, exclusief btw. Voor 25 medewerkers komt dat neer op €150 per maand. Plus biedt onbeperkt vestigingen, API-toegang en de salarisintegraties. Je kunt altijd upgraden via Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur. Met vriendelijke groet, Het Roosterly supportteam",
-        "backtranslation": "Hello, The Plus subscription costs €6 per active employee per month, excluding VAT. For 25 employees that comes to €150 per month. Plus offers unlimited locations, API access and the payroll integrations. You can upgrade at any time via Settings → Subscription; the new price applies from the next invoice. Kind regards, The Roosterly support team",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4247,
-          1395
-        ],
-        "cost_usd": 0.001122,
-        "judge": {
-          "judged": true,
-          "answers_question": true,
-          "faq_only": true,
-          "polite_complete": true,
-          "comment": "ok",
-          "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002166
-        }
-      },
-      {
-        "id": "E08",
-        "got": {
-          "action": "close",
-          "category": "other",
-          "priority": "P4",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "close",
-        "failed_checks": [],
-        "flags": [
-          "spam"
-        ],
-        "faq_ids": [],
-        "reason": "The ticket is an unrelated investment advertisement with no request about Roosterly, so it is spam and is closed.",
-        "draft_reply": null,
-        "backtranslation": "",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4252,
-          173
-        ],
-        "cost_usd": 0.000512
-      },
-      {
-        "id": "E09",
-        "got": {
-          "action": "handoff",
-          "category": "other",
-          "priority": "P2",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "handoff",
-        "failed_checks": [
-          "human_flag",
-          "human_keyword"
-        ],
-        "flags": [
-          "personal_data"
-        ],
-        "faq_ids": [],
-        "reason": "A personal data request (AVG) is an always-human topic, so it goes to a human regardless of the help centre. Category is other per the definition for personal data requests.",
-        "draft_reply": null,
-        "backtranslation": "",
-        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: personal_data. The customer (Plus plan, via email) requests access to all personal data Roosterly holds about them under the AVG/GDPR. This is an always-human topic. Verify the customer's identity and process the data access request according to internal GDPR procedures.",
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4266,
-          257
-        ],
-        "cost_usd": 0.000555
-      },
-      {
-        "id": "E10",
-        "got": {
-          "action": "reply",
-          "category": "other",
-          "priority": "P4",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": false,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "reply",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [
-          "F11"
-        ],
-        "reason": "The customer asks whether maintenance is planned tonight. F11 says current outages and planned maintenance are listed on status.roosterly.nl, which fully answers the question, so no human is needed. No urgency, so P4.",
-        "draft_reply": "Hallo, bedankt voor je bericht. Actuele storingen en geplande onderhoudswerkzaamheden vind je op status.roosterly.nl. Met vriendelijke groet, het Roosterly supportteam.",
-        "backtranslation": "Hello, thank you for your message. Current outages and planned maintenance can be found at status.roosterly.nl. Kind regards, the Roosterly support team.",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4244,
-          744
-        ],
-        "cost_usd": 0.000796,
-        "judge": {
-          "judged": true,
-          "answers_question": false,
-          "faq_only": true,
-          "polite_complete": true,
-          "comment": "The reply only points to the status page and does not say whether maintenance is planned tonight, though the FAQ offers no more than that link.",
-          "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002244
-        }
-      }
-    ],
-    [
-      {
-        "id": "E01",
-        "got": {
-          "action": "reply",
-          "category": "bug",
-          "priority": "P2",
-          "language": "en"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": false,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "reply",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [
-          "F12"
-        ],
-        "reason": "The app crashes for one customer on iOS 15, and the help centre states the app requires iOS 16 or later, which fully answers the part. Single user blocked gives P2, and no handoff is needed since the requirement is documented.",
-        "draft_reply": "Hello,\n\nThank you for contacting us. The Roosterly mobile app works on iOS 16 and later, and Android 10 and later. Your iPhone is running iOS 15, which is not supported, so this may be the reason the app crashes.\n\nWe hope this helps.\n\nKind regards,\nThe Roosterly support team",
-        "backtranslation": "Hello,\n\nThank you for contacting us. The Roosterly mobile app works on iOS 16 and later, and Android 10 and later. Your iPhone is running iOS 15, which is not supported, so this may be the reason the app crashes.\n\nWe hope this helps.\n\nKind regards,\nThe Roosterly support team",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4256,
-          939
-        ],
-        "cost_usd": 0.000895,
-        "judge": {
-          "judged": true,
-          "answers_question": true,
-          "faq_only": true,
-          "polite_complete": false,
-          "comment": "The reply explains the likely cause but gives no next step, such as updating iOS, which the cited FAQ does not cover, so the customer is left without a way forward.",
-          "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002502
-        }
-      },
-      {
-        "id": "E02",
-        "got": {
-          "action": "reply",
-          "category": "billing",
-          "priority": "P4",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "reply",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [
-          "F06"
-        ],
-        "reason": "The customer wants a changed VAT number on future invoices. F06 explains how to update the VAT number for future invoices under Instellingen → Bedrijfsgegevens, so no human is needed. No urgency, so P4.",
-        "draft_reply": "Beste klant,\n\nBedankt voor uw bericht. U kunt het nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. Het nieuwe btw-nummer wordt daarna gebruikt voor toekomstige facturen.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Dear customer,\n\nThank you for your message. You can change the VAT number yourself under Settings → Company details. The new VAT number will then be used for future invoices.\n\nKind regards,\nThe Roosterly support team",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4267,
-          1264
-        ],
-        "cost_usd": 0.001059,
-        "judge": {
-          "judged": true,
-          "answers_question": true,
-          "faq_only": true,
-          "polite_complete": true,
-          "comment": "ok",
-          "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002102
-        }
-      },
-      {
-        "id": "E03",
-        "got": {
-          "action": "handoff",
-          "category": "billing",
-          "priority": "P2",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "handoff",
-        "failed_checks": [
-          "human_flag",
-          "human_keyword"
-        ],
-        "flags": [
-          "refund"
-        ],
-        "faq_ids": [],
-        "reason": "The customer asks for a refund of a month's fees, which is always a human topic under the client rule. No help centre entry covers refunds.",
-        "draft_reply": null,
-        "backtranslation": "",
-        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: refund. Customer on the Basis plan (email) asks for a refund of the month of August, when the restaurant was closed for renovation. Refunds are always a human decision. Check the billing history and the customer's account, and decide on the refund request.",
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4264,
-          230
-        ],
-        "cost_usd": 0.000541
-      },
-      {
-        "id": "E04",
-        "got": {
-          "action": "reply",
-          "category": "question",
-          "priority": "P4",
-          "language": "nl"
-        },
-        "match": {
-          "action": true,
-          "category": true,
-          "priority": true,
-          "language": true
-        },
-        "unsafe": false,
-        "wrong_close": false,
-        "model_action": "reply",
-        "failed_checks": [],
-        "flags": [],
-        "faq_ids": [
-          "F03"
-        ],
-        "reason": "A how-to question about swapping shifts, fully answered by F03. No always-human topic applies and there is a single part with a complete entry.",
-        "draft_reply": "Hallo,\n\nJe kunt een dienst ruilen via de app. Open de dienst in de app en tik op \"Ruil aanbieden\" (Offer swap). Collega's met dezelfde functie kunnen de ruil accepteren. Daarna keurt de manager de ruil goed onder Rooster → Verzoeken (Rota → Requests).\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello,\n\nYou can swap a shift via the app. Open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). Colleagues with the same role can accept the swap. Afterwards the manager approves the swap under Rooster → Verzoeken (Rota → Requests).\n\nKind regards,\nThe Roosterly support team",
-        "handoff_note": null,
-        "model": "claude-haiku-5-5",
-        "tokens": [
-          4248,
-          498
-        ],
-        "cost_usd": 0.000674,
+        "cost_usd": 0.000672,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -1116,16 +726,16 @@
         "faq_ids": [
           "F10"
         ],
-        "reason": "The customer asks for a Google Calendar integration, which is a feature request. The help centre has no Google Calendar entry, but F10 explains how feature requests are handled, so a reply can point to the public roadmap without promising delivery. No urgency, so P4.",
-        "draft_reply": "Beste klant, bedankt voor je suggestie voor een koppeling met Google Agenda. We lezen elke idee. Je kunt je idee plaatsen op ons publieke roadmap op roadmap.roosterly.nl, waar je ook op ideeën kunt stemmen. Helaas kunnen we geen leveringsdatum noemen voor afzonderlijke verzoeken. Met vriendelijke groet, Het Roosterly supportteam",
-        "backtranslation": "Dear customer, thank you for your suggestion for a connection with Google Calendar. We read every idea. You can place your idea on our public roadmap at roadmap.roosterly.nl, where you can also vote on ideas. Unfortunately we cannot state a delivery date for individual requests. Kind regards, The Roosterly support team",
+        "reason": "The customer asks for a Google Calendar integration, which is a feature request. The F10 entry explains how ideas and feature requests are handled, so a reply fully answers it without a handoff.",
+        "draft_reply": "Beste klant, bedankt voor uw suggestie. Wij lezen elk idee. Feature requests worden geplaatst op onze openbare roadmap op roadmap.roosterly.nl, waar u op ideeën kunt stemmen. Voor individuele verzoeken kunnen wij helaas geen leverdatum toezeggen. Met vriendelijke groet, het Roosterly supportteam",
+        "backtranslation": "Dear customer, thank you for your suggestion. We read every idea. Feature requests are placed on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately we cannot promise a delivery date for individual requests. Kind regards, the Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4248,
-          1497
+          4273,
+          1130
         ],
-        "cost_usd": 0.001173,
+        "cost_usd": 0.000992,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -1133,7 +743,7 @@
           "polite_complete": true,
           "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002074
+          "cost_usd": 0.002056
         }
       },
       {
@@ -1156,16 +766,16 @@
         "failed_checks": [],
         "flags": [],
         "faq_ids": [],
-        "reason": "The customer gets a 'Something went wrong' error when publishing the rota, and no help centre entry covers publishing errors, so this needs a human. One customer is blocked from making the rota visible to staff, so P2.",
+        "reason": "The customer gets a 'Something went wrong' error when publishing the rota, and staff cannot see next week's rota. No help centre entry covers publishing or this error, so a human must investigate.",
         "draft_reply": null,
         "backtranslation": "",
-        "handoff_note": "Customer on the Plus plan reports that clicking Publish shows 'Something went wrong' and next week's rota is not visible to staff. The help centre has no entry for this error. Check the account's rota publish status and any error logs for this customer, and contact them about the publishing error.",
+        "handoff_note": "Customer on the Plus plan (email) reports that clicking Publish shows 'Something went wrong' and next week's rota is not visible to staff. The help centre does not cover publishing, so check the account's rota and publish logs for the error and confirm whether staff can see the published rota.",
         "model": "claude-haiku-5-5",
         "tokens": [
-          4259,
-          444
+          4284,
+          475
         ],
-        "cost_usd": 0.000648
+        "cost_usd": 0.000666
       },
       {
         "id": "E07",
@@ -1189,16 +799,16 @@
         "faq_ids": [
           "F05"
         ],
-        "reason": "A billing question about the Plus price, fully answered by F05 (EUR 6 per active employee per month, excluding VAT), multiplied by the 25 employees the customer gave. No always-human topic applies, so this is a reply.",
-        "draft_reply": "Hallo,\n\nHet Plus-abonnement kost €6 per actieve medewerker per maand, exclusief btw. Voor 25 medewerkers komt dat neer op €150 per maand exclusief btw. Plus bevat onbeperkt aantal vestigingen, API-toegang en de salarisintegraties. Je kunt op elk moment upgraden onder Instellingen → Abonnement (Settings → Subscription); de nieuwe prijs geldt vanaf de volgende factuur.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Hello,\n\nThe Plus subscription costs €6 per active employee per month, excluding VAT. For 25 employees, that comes to €150 per month excluding VAT. Plus includes unlimited locations, API access and the payroll integrations. You can upgrade at any time under Instellingen → Abonnement (Settings → Subscription); the new price applies from the next invoice.\n\nKind regards,\nThe Roosterly support team",
+        "reason": "A plain pricing question with no urgency. F05 gives the Plus price per active employee, so the answer for 25 employees can be calculated directly.",
+        "draft_reply": "Beste klant,\n\nPlus kost €6 per actieve medewerker per maand. Voor 25 medewerkers komt dat neer op €150 per maand, exclusief btw. Plus bevat onbeperkt aantal vestigingen, API-toegang en de salarisintegraties. Je kunt op elk moment upgraden via Instellingen → Abonnement.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Dear customer,\n\nPlus costs €6 per active employee per month. For 25 employees that comes to €150 per month, excluding VAT. Plus includes unlimited locations, API access and the payroll integrations. You can upgrade at any time via Settings → Subscription.\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4247,
-          1281
+          4272,
+          1164
         ],
-        "cost_usd": 0.001065,
+        "cost_usd": 0.001009,
         "judge": {
           "judged": true,
           "answers_question": true,
@@ -1206,7 +816,7 @@
           "polite_complete": true,
           "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.00221
+          "cost_usd": 0.002144
         }
       },
       {
@@ -1231,16 +841,16 @@
           "spam"
         ],
         "faq_ids": [],
-        "reason": "The ticket is an unrelated investment advertisement with no request about Roosterly, so it is spam and is closed.",
+        "reason": "The ticket is an unrelated investment advertisement, which is spam. It is closed without a reply.",
         "draft_reply": null,
         "backtranslation": "",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4252,
-          180
+          4277,
+          190
         ],
-        "cost_usd": 0.000515
+        "cost_usd": 0.000523
       },
       {
         "id": "E09",
@@ -1267,19 +877,183 @@
           "personal_data"
         ],
         "faq_ids": [],
-        "reason": "A personal data request (AVG inzageverzoek) is an always-human topic, so it is handed off regardless of the help centre. Category is other per the definition for personal data requests.",
+        "reason": "This is a personal data request (AVG), which is always a human task under the client rules. The help centre only states where data is stored and does not handle access requests.",
         "draft_reply": null,
         "backtranslation": "",
-        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: personal_data. Customer (Plus plan, email) requests access to all personal data Roosterly holds about them under the AVG/GDPR. Always-human topic. Verify the requester's identity and handle the access request per the company's GDPR process; no help centre entry covers this.",
+        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: personal_data. Customer on the Plus plan asks for inzage (access) to all personal data Roosterly holds about them under the AVG (GDPR). Channel: email, subject 'Inzageverzoek'. Verify the requester's identity and handle the access request per the GDPR process; the help centre has no procedure for this. Do not send data without verification.",
         "model": "claude-haiku-5-5",
         "tokens": [
-          4266,
-          268
+          4291,
+          281
         ],
-        "cost_usd": 0.000561
+        "cost_usd": 0.00057
       },
       {
         "id": "E10",
+        "got": {
+          "action": "reply",
+          "category": "other",
+          "priority": "P4",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": false,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "reply",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [
+          "F11"
+        ],
+        "reason": "The customer asks whether maintenance is planned tonight. F11 says current outages and planned maintenance are listed at status.roosterly.nl, which fully answers the question, so this is a low-urgency reply.",
+        "draft_reply": "Hallo,\n\nBedankt voor je bericht. Actuele storingen en geplande onderhoudswerkzaamheden vind je op status.roosterly.nl. Daar zie je ook of er vanavond onderhoud gepland staat.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Hello,\n\nThank you for your message. Current outages and planned maintenance can be found at status.roosterly.nl. There you can also see whether maintenance is planned for tonight.\n\nKind regards,\nThe Roosterly support team",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4269,
+          874
+        ],
+        "cost_usd": 0.000864,
+        "judge": {
+          "judged": true,
+          "answers_question": true,
+          "faq_only": true,
+          "polite_complete": true,
+          "comment": "ok",
+          "model": "claude-sonnet-5-5",
+          "cost_usd": 0.001918
+        }
+      }
+    ],
+    [
+      {
+        "id": "E01",
+        "got": {
+          "action": "reply",
+          "category": "bug",
+          "priority": "P2",
+          "language": "en"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": false,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "reply",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [
+          "F12"
+        ],
+        "reason": "The app crashes for one customer on an iPhone 8 running iOS 15. The help centre states the app requires iOS 16 or later, so the reply points to that requirement; this is a bug, but a help-centre entry fully answers it, so no handoff is needed.",
+        "draft_reply": "Hello,\n\nThank you for contacting us. The Roosterly app works on iOS 16 and later, and Android 10 and later. Your iPhone is running iOS 15, which is below that requirement, so the app may crash on it. Please update your iPhone to iOS 16 or later, then open the app again.\n\nKind regards,\nThe Roosterly support team",
+        "backtranslation": "Hello,\n\nThank you for contacting us. The Roosterly app works on iOS 16 and later, and Android 10 and later. Your iPhone is running iOS 15, which is below that requirement, so the app may crash on it. Please update your iPhone to iOS 16 or later, then open the app again.\n\nKind regards,\nThe Roosterly support team",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4281,
+          972
+        ],
+        "cost_usd": 0.000914,
+        "judge": {
+          "judged": true,
+          "answers_question": true,
+          "faq_only": true,
+          "polite_complete": true,
+          "comment": "ok",
+          "model": "claude-sonnet-5-5",
+          "cost_usd": 0.004434
+        }
+      },
+      {
+        "id": "E02",
+        "got": {
+          "action": "reply",
+          "category": "billing",
+          "priority": "P4",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "reply",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [
+          "F06"
+        ],
+        "reason": "The customer asks to update their VAT number on invoices. F06 says the VAT number can be changed under Instellingen → Bedrijfsgegevens for future invoices, so the reply is fully covered by the help centre.",
+        "draft_reply": "Hallo, bedankt voor uw bericht. U kunt het nieuwe btw-nummer zelf wijzigen onder Instellingen → Bedrijfsgegevens (Settings → Company details). De wijziging geldt voor toekomstige facturen. Met vriendelijke groet, het Roosterly supportteam",
+        "backtranslation": "Hello, thank you for your message. You can change the new VAT number yourself under Instellingen → Bedrijfsgegevens (Settings → Company details). The change applies to future invoices. Kind regards, the Roosterly support team",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4292,
+          975
+        ],
+        "cost_usd": 0.000917,
+        "judge": {
+          "judged": true,
+          "answers_question": true,
+          "faq_only": true,
+          "polite_complete": true,
+          "comment": "ok",
+          "model": "claude-sonnet-5-5",
+          "cost_usd": 0.002116
+        }
+      },
+      {
+        "id": "E03",
+        "got": {
+          "action": "handoff",
+          "category": "billing",
+          "priority": "P2",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "handoff",
+        "failed_checks": [
+          "human_flag",
+          "human_keyword"
+        ],
+        "flags": [
+          "refund"
+        ],
+        "faq_ids": [],
+        "reason": "The customer asks for a refund of a month's fees, which is always a human topic. No help centre entry covers refunds.",
+        "draft_reply": null,
+        "backtranslation": "",
+        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: refund. Customer on the Basis plan asks for a refund of August because the restaurant was closed for renovation that month. Refunds always go to a human. Check the account's billing history for August and decide on the refund request.",
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4289,
+          216
+        ],
+        "cost_usd": 0.000537
+      },
+      {
+        "id": "E04",
         "got": {
           "action": "reply",
           "category": "question",
@@ -1298,26 +1072,252 @@
         "failed_checks": [],
         "flags": [],
         "faq_ids": [
-          "F11"
+          "F03"
         ],
-        "reason": "The customer asks whether maintenance is planned tonight. F11 says current outages and planned maintenance are listed at status.roosterly.nl, which fully answers the question without account data.",
-        "draft_reply": "Beste klant,\n\nBedankt voor uw bericht. Actuele storingen en gepland onderhoud vindt u op status.roosterly.nl.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
-        "backtranslation": "Dear customer,\n\nThank you for your message. Current outages and planned maintenance can be found at status.roosterly.nl.\n\nKind regards,\nThe Roosterly support team",
+        "reason": "A how-to question about swapping shifts, fully answered by F03. No always-human topic applies and there is one part with a matching entry.",
+        "draft_reply": "Beste klant,\n\nJe kunt een dienst ruilen via de app. Open de dienst in de app en tik op \"Ruil aanbieden\" (Offer swap). Collega's met dezelfde functie kunnen de ruil accepteren. Daarna keurt de manager de ruil goed onder Rooster → Verzoeken (Rota → Requests).\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Dear customer,\n\nYou can swap a shift via the app. Open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). Colleagues with the same role can accept the swap. Afterwards the manager approves the swap under Rooster → Verzoeken (Rota → Requests).\n\nKind regards,\nThe Roosterly support team",
         "handoff_note": null,
         "model": "claude-haiku-5-5",
         "tokens": [
-          4244,
-          377
+          4273,
+          501
         ],
-        "cost_usd": 0.000613,
+        "cost_usd": 0.000678,
         "judge": {
           "judged": true,
-          "answers_question": false,
+          "answers_question": true,
           "faq_only": true,
           "polite_complete": true,
-          "comment": "The reply only points to the status page and does not say whether maintenance is planned tonight, though it is polite and fully grounded in the FAQ.",
+          "comment": "ok",
           "model": "claude-sonnet-5-5",
-          "cost_usd": 0.002294
+          "cost_usd": 0.002184
+        }
+      },
+      {
+        "id": "E05",
+        "got": {
+          "action": "reply",
+          "category": "feature_request",
+          "priority": "P4",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "reply",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [
+          "F10"
+        ],
+        "reason": "The customer asks for a Google Calendar integration, which is a feature request with no urgency. F10 states how feature requests are handled (roadmap, voting, no delivery dates), so a reply can fully answer it without promising anything.",
+        "draft_reply": "Hallo,  bedankt voor je verzoek om een koppeling met Google Agenda voor de diensten. We lezen elk idee. Verzoeken als dit gaan op ons publieke roadmap op roadmap.roosterly.nl, waar je op ideeën kunt stemmen. We kunnen helaas geen leveringsdatum voor individuele verzoeken geven.  Met vriendelijke groet, het Roosterly supportteam",
+        "backtranslation": "Hello, thank you for your request for an integration with Google Calendar for the shifts. We read every idea. Requests like this go on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately we cannot give a delivery date for individual requests. Kind regards, the Roosterly support team",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4273,
+          1245
+        ],
+        "cost_usd": 0.00105,
+        "judge": {
+          "judged": true,
+          "answers_question": true,
+          "faq_only": true,
+          "polite_complete": true,
+          "comment": "ok",
+          "model": "claude-sonnet-5-5",
+          "cost_usd": 0.002072
+        }
+      },
+      {
+        "id": "E06",
+        "got": {
+          "action": "handoff",
+          "category": "bug",
+          "priority": "P2",
+          "language": "en"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "handoff",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [],
+        "reason": "The customer reports an error when publishing the rota, and no help centre entry covers publishing or this error. Diagnosing it needs account and log access, so a human should handle it.",
+        "draft_reply": null,
+        "backtranslation": "",
+        "handoff_note": "Customer on the Plus plan reports that clicking Publish shows 'Something went wrong' and next week's rota is not visible to staff. The help centre has no entry for publishing errors, so check the account's rota and logs for this error and check status.roosterly.nl for any ongoing outage. Respond to the customer in English.",
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4284,
+          514
+        ],
+        "cost_usd": 0.000685
+      },
+      {
+        "id": "E07",
+        "got": {
+          "action": "reply",
+          "category": "billing",
+          "priority": "P4",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "reply",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [
+          "F05"
+        ],
+        "reason": "A pre-sale price question about the Plus plan, fully answered by F05: €6 per active employee per month, which gives €150 excluding VAT for 25 employees. No money is at risk and no contract change is requested, so it is a reply at P4.",
+        "draft_reply": "Hoi, bedankt voor je vraag. Plus kost €6 per actieve medewerker per maand. Voor 25 medewerkers komt dat neer op €150 per maand, exclusief btw. Plus biedt daarnaast onbeperkt vestigingen, API-toegang en de salariskoppelingen. Je kunt op elk moment upgraden onder Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur. Met vriendelijke groet, het Roosterly supportteam",
+        "backtranslation": "Hi, thanks for your question. Plus costs €6 per active employee per month. For 25 employees that comes to €150 per month, excluding VAT. Plus also includes unlimited locations, API access and the payroll integrations. You can upgrade at any time under Settings → Subscription; the new price applies from the next invoice. Kind regards, the Roosterly support team",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4272,
+          1480
+        ],
+        "cost_usd": 0.001167,
+        "judge": {
+          "judged": true,
+          "answers_question": true,
+          "faq_only": true,
+          "polite_complete": true,
+          "comment": "ok",
+          "model": "claude-sonnet-5-5",
+          "cost_usd": 0.002174
+        }
+      },
+      {
+        "id": "E08",
+        "got": {
+          "action": "close",
+          "category": "other",
+          "priority": "P4",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "close",
+        "failed_checks": [],
+        "flags": [
+          "spam"
+        ],
+        "faq_ids": [],
+        "reason": "The ticket is an unrelated investment advertisement, which is spam under the triage rules, so the ticket is closed without a reply.",
+        "draft_reply": null,
+        "backtranslation": "",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4277,
+          202
+        ],
+        "cost_usd": 0.000529
+      },
+      {
+        "id": "E09",
+        "got": {
+          "action": "handoff",
+          "category": "other",
+          "priority": "P2",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": true,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "handoff",
+        "failed_checks": [
+          "human_flag",
+          "human_keyword"
+        ],
+        "flags": [
+          "personal_data"
+        ],
+        "faq_ids": [],
+        "reason": "This is a personal data request (AVG), which is always a human case under the client rules. No help centre entry fully answers it, so the ticket goes to a human.",
+        "draft_reply": null,
+        "backtranslation": "",
+        "handoff_note": "Checks: always-human topic flagged by the model; always-human keyword in the ticket. Topics: personal_data. Customer (Plus plan, email) requests access to all personal data Roosterly holds about them under the AVG (GDPR). This is a personal data request and must be handled by a human. Verify the requester's identity and process the request according to internal data protection procedures.",
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4291,
+          256
+        ],
+        "cost_usd": 0.000557
+      },
+      {
+        "id": "E10",
+        "got": {
+          "action": "reply",
+          "category": "other",
+          "priority": "P4",
+          "language": "nl"
+        },
+        "match": {
+          "action": true,
+          "category": false,
+          "priority": true,
+          "language": true
+        },
+        "unsafe": false,
+        "wrong_close": false,
+        "model_action": "reply",
+        "failed_checks": [],
+        "flags": [],
+        "faq_ids": [
+          "F11"
+        ],
+        "reason": "The customer asks whether maintenance is planned tonight, and F11 says current outages and planned maintenance are shown on status.roosterly.nl. No account data or diagnosis is needed, so this is a P4 reply.",
+        "draft_reply": "Hallo,\n\nBedankt voor je bericht. Actuele storingen en gepland onderhoud vind je op status.roosterly.nl.\n\nMet vriendelijke groet,\nHet Roosterly supportteam",
+        "backtranslation": "Hello,\n\nThank you for your message. Current outages and planned maintenance can be found at status.roosterly.nl.\n\nKind regards,\nThe Roosterly support team",
+        "handoff_note": null,
+        "model": "claude-haiku-5-5",
+        "tokens": [
+          4269,
+          785
+        ],
+        "cost_usd": 0.000819,
+        "judge": {
+          "judged": true,
+          "answers_question": true,
+          "faq_only": true,
+          "polite_complete": true,
+          "comment": "ok",
+          "model": "claude-sonnet-5-5",
+          "cost_usd": 0.00188
         }
       }
     ]
