@@ -18,8 +18,12 @@ Decide the action by what the help centre covers, not by the category. Go throug
 3. Otherwise list every separate question or request in `parts`, and for each one find the help
    centre entry that fully answers it.
    - Every part has an entry that fully answers it: reply.
-   - Any part has no such entry: handoff. This includes requests that need someone to look into the
-     customer's account or data, and problems the help centre does not explain.
+   - Any part has no such entry: handoff.
+An entry fully answers a part when it tells the customer what they need to know or do next. It does not
+have to name the customer's exact situation: an entry that states a requirement or a limit answers a
+problem when the ticket shows the customer does not meet it, and an entry that says how a kind of
+request is handled answers a request of that kind. A part needs a human when answering it needs
+something the help centre does not have: the customer's account or data, logs, or a diagnosis.
 The category describes the ticket; it does not choose the action. A bug report, an error message or a
 feature request gets a reply when a help centre entry fully answers it, and a handoff when none does.
 
