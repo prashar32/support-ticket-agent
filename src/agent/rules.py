@@ -18,7 +18,7 @@ import re
 import unicodedata
 
 MIN_CONFIDENCE = 0.7
-NOTE_LIMIT = 600
+NOTE_LIMIT = 1000  # room for a draft back-translation in an escalated reply
 ALWAYS_HUMAN = ("refund", "cancellation_or_contract", "personal_data", "security", "legal_threat",
                 "churn_threat")  # fmt: skip
 
@@ -188,6 +188,12 @@ EXPLAIN = {
 }
 
 
+# Checks about the quality of a reply. If only these fail, a human can fix and send the draft.
+# Human topics and payment details are not in this set: those tickets never get "send if correct".
+REPLY_CHECKS = {"empty_draft", "draft_language", "ticket_language", "faq_ids", "unanswered_part", "url",
+                "menu_path", "number", "low_confidence", "multiple_requests"}  # fmt: skip
+
+
 def keyword_topics(text: str) -> list[str]:
     folded = fold(text)
     return [topic for topic, pattern in KEYWORDS.items() if re.search(pattern, folded)]
@@ -257,12 +263,21 @@ def apply(ticket: dict, d: dict, faq: dict[str, str]) -> tuple[str, dict, list[s
 
 
 def handoff_note(d: dict, failed: list[str], topics: list[str], escalated_from: str | None) -> str:
-    lines = []
-    if escalated_from:
-        lines.append(f"Auto-escalated (model chose {escalated_from}).")
-    if failed:
+    backtranslation = d["english_backtranslation"].strip()
+    if escalated_from == "reply" and set(failed) <= REPLY_CHECKS and backtranslation:
+        # Only reply-quality checks failed: give the agent the draft to check, not the model's note
+        # (which was written for a reply and may say "no action needed").
         why = "; ".join(EXPLAIN[f] for f in failed)
-        lines.append(f"Checks: {why}." + (f" Topics: {', '.join(topics)}." if topics else ""))
-    lines.append(d["handoff_note"].strip())
-    note = redact(" ".join(lines))
+        note = (f"Auto-escalated: {why}. Draft reply (EN): {backtranslation}"
+                " Check the flagged part and send if correct.")  # fmt: skip
+    else:
+        lines = []
+        if escalated_from:
+            lines.append(f"Auto-escalated (model chose {escalated_from}).")
+        if failed:
+            why = "; ".join(EXPLAIN[f] for f in failed)
+            lines.append(f"Checks: {why}." + (f" Topics: {', '.join(topics)}." if topics else ""))
+        lines.append(d["handoff_note"].strip())
+        note = " ".join(lines)
+    note = redact(note)
     return note if len(note) <= NOTE_LIMIT else note[: NOTE_LIMIT - 3].rstrip() + "..."

@@ -228,3 +228,31 @@ def test_highest_floor_wins():
 
 def test_no_floor_topic_keeps_model_priority():
     assert rules.apply(ticket(), decision(priority="P4"), FAQ)[1]["priority"] == "P4"
+
+
+def test_escalated_reply_note_carries_the_draft_not_the_model_note():
+    d = decision(
+        draft_reply="Hoi! Kijk op https://example.com voor de uitleg. Groet, het Roosterly team",
+        english_backtranslation="Hi! See https://example.com for the explanation.",
+        handoff_note="No action needed.",
+    )
+    action, body, failed = rules.apply(ticket(), d, FAQ)
+    assert action == "handoff" and failed == ["url"]
+    note = body["handoff_note"]
+    assert note.startswith("Auto-escalated: reply contains a URL not in the cited FAQ.")
+    assert "Draft reply (EN): Hi! See https://example.com" in note
+    assert note.endswith("Check the flagged part and send if correct.")
+    assert "No action needed" not in note
+
+
+def test_escalated_reply_with_human_topic_keeps_the_human_note():
+    d = decision(flags=["refund"], handoff_note="Customer wants money back for March.")
+    note = rules.apply(ticket(), d, FAQ)[1]["handoff_note"]
+    assert "send if correct" not in note and "Draft reply" not in note
+    assert note.endswith("Customer wants money back for March.")
+
+
+def test_escalated_reply_note_never_repeats_payment_details():
+    d = decision(confidence=0.5, english_backtranslation="Your card 4111 1111 1111 1111 is fine.")
+    note = rules.apply(ticket(), d, FAQ)[1]["handoff_note"]
+    assert "Draft reply (EN)" in note and "4111" not in note
