@@ -46,3 +46,11 @@ def test_run_refuses_stale_journal(handled, capsys):
     assert cli.cmd_run(fake.client(), db) == 1
     assert "agent reset" in capsys.readouterr().out
     assert fake.statuses[409] == 0
+
+
+def test_status_does_not_print_candidate(handled, capsys):
+    fake, db = handled
+    assert cli.cmd_status(fake.client(), db) == 0
+    out = capsys.readouterr().out
+    assert "Test Candidate" not in out and "candidate" not in out
+    assert '"handled_tickets": 30' in out

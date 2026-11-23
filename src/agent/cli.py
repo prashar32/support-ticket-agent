@@ -13,6 +13,12 @@ from agent.logs import log_path
 JOURNAL = Path("state/journal.db")
 LOG_DIR = Path("logs")
 EXAMPLES = Path("evals/examples.json")
+STATUS_FIELDS = ("mode", "open_tickets", "handled_tickets", "live_ends_at")  # not `candidate`
+
+
+def status_line(client: Helpdesk) -> str:
+    status = client.status()
+    return json.dumps({k: status.get(k) for k in STATUS_FIELDS})
 
 
 def cmd_run(client: Helpdesk, db) -> int:
@@ -29,14 +35,14 @@ def cmd_run(client: Helpdesk, db) -> int:
 
 
 def cmd_status(client: Helpdesk, db) -> int:
-    print("Helpdesk:", json.dumps(client.status()))
+    print("Helpdesk:", status_line(client))
     print("Journal: ", journal.counts(db))
     return 0
 
 
 def cmd_probe(client: Helpdesk, db) -> int:
     """Read-only look at the live helpdesk. GET requests only."""
-    print("Status:", json.dumps(client.status()))
+    print("Status:", status_line(client))
 
     examples = client.examples()
     EXAMPLES.parent.mkdir(parents=True, exist_ok=True)
