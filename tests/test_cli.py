@@ -54,3 +54,18 @@ def test_status_does_not_print_candidate(handled, capsys):
     out = capsys.readouterr().out
     assert "Test Candidate" not in out and "candidate" not in out
     assert '"handled_tickets": 30' in out
+
+
+def test_eval_needs_no_helpdesk(monkeypatch, tmp_path, capsys):
+    from agent import evaluate
+
+    def no_helpdesk():
+        raise AssertionError("eval must not build a helpdesk client")
+
+    calls = []
+    monkeypatch.setattr(cli, "helpdesk_from_env", no_helpdesk)
+    monkeypatch.setattr(
+        evaluate, "run_eval", lambda *a: calls.append(a) or (tmp_path / "x.md", {"unsafe": 0})
+    )
+    assert cli.main(["eval", "--out", "baseline", "--repeat", "2"]) == 0
+    assert calls[0][2:] == ("baseline", 2)
