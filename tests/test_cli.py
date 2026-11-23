@@ -69,3 +69,38 @@ def test_eval_needs_no_helpdesk(monkeypatch, tmp_path, capsys):
     )
     assert cli.main(["eval", "--out", "baseline", "--repeat", "2"]) == 0
     assert calls[0][2:] == ("baseline", 2)
+
+
+IBAN = "NL91ABNA0417164300"
+
+
+def test_review_prints_english_checks_and_no_payment_details(tmp_path, monkeypatch, capsys):
+    from test_decide import FakeModel, model_decision, ticket
+
+    from agent import decide
+
+    db = journal.open_journal(tmp_path / "journal.db")
+    reply = decide.make_decider(FakeModel())(ticket())
+    # The model wants to reply, but the ticket holds an IBAN and the model echoes it: code escalates.
+    leaky = model_decision(reason=f"Refund to {IBAN}.", handoff_note=f"Refund to {IBAN}.")
+    escalated = decide.make_decider(FakeModel(leaky))(ticket(body=f"Geld terug naar {IBAN} graag"))
+    spam = model_decision(action="close", flags=["spam"], category="other", faq_ids=[], draft_reply="",
+                          english_backtranslation="", reason="Advert for SEO services.")  # fmt: skip
+    close = decide.make_decider(FakeModel(spam))(ticket(body="Koop SEO!"))
+    for tid, (action, body, meta) in zip(("T001", "T002", "T003"), (reply, escalated, close), strict=True):
+        journal.save_decision(db, tid, action, body, meta)
+    journal.set_status(db, "T001", "done")
+
+    def no_helpdesk():
+        raise AssertionError("review must not build a helpdesk client")
+
+    monkeypatch.setattr(cli, "helpdesk_from_env", no_helpdesk)
+    monkeypatch.setattr(cli, "JOURNAL", tmp_path / "journal.db")
+    assert cli.main(["review"]) == 0
+    out = capsys.readouterr().out
+    assert "T001  done  reply" in out and "EN: Hi! Open the shift in the app" in out
+    assert "T002  decided  handoff" in out and "model chose reply" in out
+    assert "payment_details" in out and "note: Auto-escalated" in out
+    assert "T003  decided  close" in out and "reason: Advert for SEO services." in out
+    assert IBAN not in out and "0417164300" not in out
+    assert "3 tickets" in out and "escalated by code: 1" in out and "not done: 2" in out

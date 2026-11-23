@@ -1,7 +1,8 @@
-"""Command line entry point: `uv run agent run | status | probe | reset | eval`."""
+"""Command line entry point: `uv run agent run | status | probe | reset | review | eval`."""
 
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 
 import anthropic
@@ -80,6 +81,38 @@ def cmd_reset(client: Helpdesk, db, ask=input) -> int:
     return 0
 
 
+def review_lines(row: dict) -> list[str]:
+    """One journal row in English: the decision, failed checks, and the text a reviewer needs."""
+    p, m = row["payload"], row["meta"]
+    head = [row["id"], row["status"], row["action"], p.get("language"), p.get("category"),
+            p.get("priority"), p.get("confidence")]  # fmt: skip
+    lines = ["  ".join(str(x) if x is not None else "-" for x in head)]
+    if m.get("model_action") and m["model_action"] != row["action"]:
+        lines.append(f"    escalated by code (model chose {m['model_action']})")
+    lines.append(f"    checks: {', '.join(m.get('failed_checks') or []) or '-'}")
+    if row["action"] == "reply":
+        lines.append(f"    EN: {m.get('english_backtranslation') or '-'}")
+    elif row["action"] == "handoff":
+        lines.append(f"    note: {p.get('handoff_note') or '-'}")
+    else:
+        lines.append(f"    reason: {p.get('reason') or '-'}")
+    if row.get("note"):
+        lines.append(f"    journal: {row['note']}")
+    return lines
+
+
+def cmd_review(db) -> int:
+    """Print every journal row for a human check. Local only: no helpdesk call, nothing logged."""
+    rows = journal.all_rows(db)
+    for row in rows:
+        print("\n".join(review_lines(row)))
+    actions = Counter(r["action"] for r in rows)
+    escalated = sum(1 for r in rows if r["meta"].get("model_action") not in (None, r["action"]))
+    not_done = sum(1 for r in rows if r["status"] != "done")
+    print(f"\n{len(rows)} tickets: {dict(actions)}; escalated by code: {escalated}; not done: {not_done}")
+    return 0
+
+
 COMMANDS = {"run": cmd_run, "status": cmd_status, "probe": cmd_probe, "reset": cmd_reset}
 
 
@@ -100,6 +133,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("status", help="helpdesk status and journal counts")
     sub.add_parser("probe", help="read-only look at the live helpdesk; saves evals/examples.json")
     sub.add_parser("reset", help="reopen all practice tickets, then clear the journal")
+    sub.add_parser("review", help="print every journal decision in English (local, no API calls)")
     ev = sub.add_parser("eval", help="run the decider on the labelled examples (model API only)")
     ev.add_argument("--out", default="latest", help="report name under evals/results/")
     ev.add_argument("--repeat", type=int, default=3, help="runs per example (default 3)")
@@ -108,6 +142,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "eval":
             return cmd_eval(args.out, args.repeat)
+        if args.command == "review":
+            return cmd_review(journal.open_journal(JOURNAL))
         client = helpdesk_from_env()
         db = journal.open_journal(JOURNAL)
         return COMMANDS[args.command](client, db)

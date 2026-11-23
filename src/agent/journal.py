@@ -75,6 +75,10 @@ def rows_with(db: sqlite3.Connection, status: str) -> list[dict]:
     return [_row(r) for r in rows]
 
 
+def all_rows(db: sqlite3.Connection) -> list[dict]:
+    return [_row(r) for r in db.execute("SELECT * FROM tickets ORDER BY id")]
+
+
 def counts(db: sqlite3.Connection) -> dict[str, int]:
     return dict(db.execute("SELECT status, COUNT(*) FROM tickets GROUP BY status").fetchall())
 
