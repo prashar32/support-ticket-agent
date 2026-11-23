@@ -59,7 +59,7 @@ Reports in evals/results/ (baseline, after-attempt1, after; earlier "after" runs
 | Wrong close | 0 | 0 |
 | Action / category / priority / language | 87 / 93 / 93 / 100% | 100 / 93 / 90 / 100% |
 | E01 (bug the FAQ answers) / E05 (feature request) action | 0/3, 2/3 | 3/3, 3/3 |
-| Judge: from the FAQ only / all three yes | 93% / 93% (14 replies) | 100% / 67% (18 replies) |
+| Judge: from the FAQ only / all three yes | 93% / 93% (14 replies) | 100% / 100% (18 replies) |
 
 Fix: the model chose the action from the category ("bugs need investigation"), not from FAQ coverage.
 The prompt now decides in order: always-human -> handoff, spam/empty -> close, otherwise reply only if
@@ -67,14 +67,18 @@ every part has an entry that tells the customer what to know or do next; a part 
 data, logs or a diagnosis -> handoff. Attempt 1 read "fully answers" too strictly (action 73%), so I
 defined it in one generic sentence. That fix caused two regressions, fixed next: replies promised
 follow-up the FAQ does not offer (now a drafting rule: state only what the cited entries say), and
-priority drifted (now floors in code). Remaining: the judge's "all yes" fell because the stricter E01
-replies give the iOS requirement but not "update your phone", and E10 points only to the status page,
-which is all the FAQ has. E01 priority is P2 against a P3 label.
+priority drifted (now floors in code). The drafting rule then dropped "update your phone" from E01, so
+one line allows telling the customer to meet a requirement the entry states. In an earlier run the
+judge failed E10: it wanted a yes/no about tonight, but the FAQ only offers the status page, which is
+exactly what the client's label asks for (judge unchanged; E10 passed 3/3 in the final run). Still
+wrong: E01 priority P2 against a P3 label. The fix was chosen on the same 10 examples it is scored on,
+so this is not a held-out result; I checked the practice-run decisions with `agent review` for
+regressions.
 
-Cost per 100 tickets (claude-haiku-5-5, $0.10 in / $0.50 out per million tokens): 127,653 input and
-22,448 output tokens for 30 decisions = 4,255 in + 748 out per ticket;
-(4,255 x 0.10 + 748 x 0.50) / 1,000,000 = $0.0008 per ticket, so **$0.08 per 100 tickets**. The judge
-is eval-only ($0.04 per eval).
+Cost per 100 tickets (claude-haiku-5-5, $0.10 in / $0.50 out per million tokens): 128,403 input and
+21,582 output tokens for 30 decisions = 4,280 in + 719 out per ticket;
+(4,280 x 0.10 + 719 x 0.50) / 1,000,000 = $0.00079 per ticket, so **$0.079 per 100 tickets**. The
+judge is eval-only ($0.05 per eval).
 
 ## What I would improve
 
