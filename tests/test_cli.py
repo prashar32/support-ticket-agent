@@ -20,7 +20,7 @@ def test_reset_confirmed_reopens_and_clears_journal(handled):
     assert cli.cmd_reset(fake.client(), db, ask=lambda _: "reset") == 0
     assert ("POST", "/practice/reset") in fake.requests
     assert journal.counts(db) == {}
-    assert cli.cmd_run(fake.client(), db) == 0  # next run handles everything again
+    assert cli.cmd_run(fake.client(), db, stub_decide) == 0  # next run handles everything again
     assert len(fake.handled) == 30 and fake.statuses[409] == 0
 
 
@@ -43,7 +43,7 @@ def test_reset_failure_keeps_journal(handled):
 def test_run_refuses_stale_journal(handled, capsys):
     fake, db = handled
     fake.handled.clear()
-    assert cli.cmd_run(fake.client(), db) == 1
+    assert cli.cmd_run(fake.client(), db, stub_decide) == 1
     assert "agent reset" in capsys.readouterr().out
     assert fake.statuses[409] == 0
 

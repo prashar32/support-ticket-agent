@@ -1,13 +1,15 @@
-"""One JSON line per ticket. Only whitelisted fields, and none of them is free text,
-so no ticket body, subject, reply, email, key or payment detail can reach a log."""
+"""One JSON line per ticket. Only whitelisted fields, and none of them is free text (flags and
+failed_checks are fixed names), so no ticket body, subject, reply, note, email, key or payment
+detail can reach a log."""
 
 import json
 from datetime import UTC, datetime
 from pathlib import Path
 
 FIELDS = (
-    "ts", "ticket_id", "outcome", "action", "language", "category",
-    "priority", "confidence", "error", "duration_ms",
+    "ts", "ticket_id", "outcome", "action", "language", "category", "priority", "confidence",
+    "flags", "failed_checks", "model", "input_tokens", "output_tokens", "cost_usd",
+    "error", "duration_ms",
 )  # fmt: skip
 
 

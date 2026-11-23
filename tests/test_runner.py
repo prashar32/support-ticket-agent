@@ -15,8 +15,8 @@ class CountingDecider:
 
     def __call__(self, ticket):
         self.calls.append(ticket["id"])
-        action, body = stub_decide(ticket)
-        return action, {**body, "reason": f"decision #{len(self.calls)}"}
+        action, body, meta = stub_decide(ticket)
+        return action, {**body, "reason": f"decision #{len(self.calls)}"}, meta
 
 
 @pytest.fixture
@@ -72,7 +72,7 @@ def test_422_becomes_anomaly_with_problems(setup):
 
     def bad_reply_for_t007(ticket):
         if ticket["id"] == "T007":
-            return "reply", {"language": "nl", "category": "question", "priority": "P4", "reason": "x"}
+            return "reply", {"language": "nl", "category": "question", "priority": "P4", "reason": "x"}, {}
         return stub_decide(ticket)
 
     runner.run(fake.client(), db, bad_reply_for_t007, log)

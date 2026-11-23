@@ -10,6 +10,7 @@ from collections import Counter
 from collections.abc import Callable
 
 from agent import journal
+from agent.decide import ModelUnavailable
 from agent.helpdesk import (
     AlreadyHandled,
     ApiError,
@@ -20,7 +21,7 @@ from agent.helpdesk import (
 )
 from agent.logs import write_line
 
-Decider = Callable[[dict], tuple[str, dict]]
+Decider = Callable[[dict], tuple[str, dict, dict]]  # ticket -> (action, body, meta)
 
 
 class StaleJournal(Exception):
@@ -39,9 +40,13 @@ def run(client: Helpdesk, db, decide: Decider, log_file) -> dict[str, int]:
         raise StaleJournal(stale)
 
     summary = Counter(reconcile(client, db, log_file))
+    skipped = []
     for ticket in tickets:
-        summary[handle(client, db, decide, ticket, log_file)] += 1
-    return dict(summary)
+        outcome = handle(client, db, decide, ticket, log_file)
+        summary[outcome] += 1
+        if outcome == "model_unavailable":
+            skipped.append(ticket["id"])
+    return {**summary, "skipped": skipped} if skipped else dict(summary)
 
 
 def reconcile(client: Helpdesk, db, log_file) -> list[str]:
@@ -61,8 +66,12 @@ def handle(client: Helpdesk, db, decide: Decider, ticket: dict, log_file) -> str
     started = time.monotonic()
     row = journal.get(db, ticket["id"])
     if row is None:
-        action, body = decide(ticket)
-        journal.save_decision(db, ticket["id"], action, body)  # stored BEFORE posting
+        try:
+            action, body, meta = decide(ticket)
+        except ModelUnavailable as exc:  # nothing decided or stored: the next run tries again
+            row = {"id": ticket["id"], "action": None, "payload": {}, "meta": {}}
+            return _log(log_file, row, "model_unavailable", error=str(exc), started=started)
+        journal.save_decision(db, ticket["id"], action, body, meta)  # stored BEFORE posting
         row = journal.get(db, ticket["id"])
     if row["status"] == "anomaly":
         return _log(log_file, row, "skipped_anomaly", started=started)
@@ -90,7 +99,7 @@ def reset(client: Helpdesk, db) -> None:
 
 
 def _log(log_file, row: dict, outcome: str, error: str | None = None, started=None) -> str:
-    p = row["payload"]
+    p, m = row["payload"], row.get("meta") or {}
     write_line(
         log_file,
         ticket_id=row["id"],
@@ -100,6 +109,12 @@ def _log(log_file, row: dict, outcome: str, error: str | None = None, started=No
         category=p.get("category"),
         priority=p.get("priority"),
         confidence=p.get("confidence"),
+        flags=m.get("flags"),
+        failed_checks=m.get("failed_checks"),
+        model=m.get("model"),
+        input_tokens=m.get("input_tokens"),
+        output_tokens=m.get("output_tokens"),
+        cost_usd=m.get("cost_usd"),
         error=error,
         duration_ms=round((time.monotonic() - started) * 1000) if started else None,
     )

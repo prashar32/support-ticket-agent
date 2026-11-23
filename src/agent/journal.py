@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     status     TEXT NOT NULL,
     action     TEXT NOT NULL,
     payload    TEXT NOT NULL,
+    meta       TEXT,
     note       TEXT,
     updated_at TEXT NOT NULL
 )
@@ -29,6 +30,9 @@ def open_journal(path: str | Path) -> sqlite3.Connection:
     db = sqlite3.connect(path, isolation_level=None)  # autocommit: every write is durable at once
     db.row_factory = sqlite3.Row
     db.execute(SCHEMA)
+    columns = {r["name"] for r in db.execute("PRAGMA table_info(tickets)")}
+    if "meta" not in columns:  # journal created before session 2
+        db.execute("ALTER TABLE tickets ADD COLUMN meta TEXT")
     return db
 
 
@@ -39,18 +43,21 @@ def _now() -> str:
 def _row(r: sqlite3.Row | None) -> dict | None:
     if r is None:
         return None
-    return {**dict(r), "payload": json.loads(r["payload"])}
+    return {**dict(r), "payload": json.loads(r["payload"]), "meta": json.loads(r["meta"] or "{}")}
 
 
 def get(db: sqlite3.Connection, ticket_id: str) -> dict | None:
     return _row(db.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,)).fetchone())
 
 
-def save_decision(db: sqlite3.Connection, ticket_id: str, action: str, payload: dict) -> None:
-    """Insert a new decision. Fails if the ticket already has one: decisions are never replaced."""
+def save_decision(db: sqlite3.Connection, ticket_id: str, action: str, payload: dict, meta: dict) -> None:
+    """Insert a new decision. Fails if the ticket already has one: decisions are never replaced.
+    payload is what gets posted; meta is local only (flags, checks, tokens, back-translation)."""
+    payload_json, meta_json = (json.dumps(x, ensure_ascii=False) for x in (payload, meta))
     db.execute(
-        "INSERT INTO tickets (id, status, action, payload, updated_at) VALUES (?, 'decided', ?, ?, ?)",
-        (ticket_id, action, json.dumps(payload, ensure_ascii=False), _now()),
+        "INSERT INTO tickets (id, status, action, payload, meta, updated_at)"
+        " VALUES (?, 'decided', ?, ?, ?, ?)",
+        (ticket_id, action, payload_json, meta_json, _now()),
     )
 
 

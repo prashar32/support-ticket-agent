@@ -1,12 +1,13 @@
-"""Command line entry point: `uv run agent run | status | probe | reset`."""
+"""Command line entry point: `uv run agent run | status | probe | reset | eval`."""
 
 import argparse
 import json
 from pathlib import Path
 
+import anthropic
+
 from agent import journal, runner
-from agent.config import ConfigError, helpdesk_from_env
-from agent.decide import stub_decide
+from agent.config import ConfigError, decider_from_env, helpdesk_from_env
 from agent.helpdesk import Helpdesk, HelpdeskError
 from agent.logs import log_path
 
@@ -21,17 +22,21 @@ def status_line(client: Helpdesk) -> str:
     return json.dumps({k: status.get(k) for k in STATUS_FIELDS})
 
 
-def cmd_run(client: Helpdesk, db) -> int:
+def cmd_run(client: Helpdesk, db, decide=None) -> int:
     log_file = log_path(LOG_DIR)
     try:
-        summary = runner.run(client, db, stub_decide, log_file)
+        summary = runner.run(client, db, decide or decider_from_env(), log_file)
     except runner.StaleJournal as exc:
         print(f"Refusing to run: {exc}: {', '.join(exc.ticket_ids)}")
         print("The helpdesk was reset without the journal. Use `uv run agent reset`.")
         return 1
+    skipped = summary.pop("skipped", [])
     print(f"Run finished: {summary}")
+    if skipped:
+        print(f"{len(skipped)} tickets skipped because the model was unavailable: {', '.join(skipped)}.")
+        print("They have no decision and were not answered. Run `uv run agent run` again to handle them.")
     print(f"Log: {log_file}")
-    return 0
+    return 1 if skipped else 0
 
 
 def cmd_status(client: Helpdesk, db) -> int:
@@ -78,6 +83,16 @@ def cmd_reset(client: Helpdesk, db, ask=input) -> int:
 COMMANDS = {"run": cmd_run, "status": cmd_status, "probe": cmd_probe, "reset": cmd_reset}
 
 
+def cmd_eval(name: str, repeat: int) -> int:
+    """Run the decider on evals/examples.json. Calls the model API only, never the helpdesk."""
+    from agent import evaluate  # the eval also needs the judge model; keep it out of normal runs
+
+    md_path, summary = evaluate.run_eval(EXAMPLES, Path("evals/results"), name, repeat)
+    print(json.dumps(summary, indent=2))
+    print(f"Report: {md_path}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="agent")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -85,16 +100,23 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("status", help="helpdesk status and journal counts")
     sub.add_parser("probe", help="read-only look at the live helpdesk; saves evals/examples.json")
     sub.add_parser("reset", help="reopen all practice tickets, then clear the journal")
+    ev = sub.add_parser("eval", help="run the decider on the labelled examples (model API only)")
+    ev.add_argument("--out", default="latest", help="report name under evals/results/")
+    ev.add_argument("--repeat", type=int, default=3, help="runs per example (default 3)")
     args = parser.parse_args(argv)
 
     try:
+        if args.command == "eval":
+            return cmd_eval(args.out, args.repeat)
         client = helpdesk_from_env()
+        db = journal.open_journal(JOURNAL)
+        return COMMANDS[args.command](client, db)
     except ConfigError as exc:
         print(exc)
         return 2
-    db = journal.open_journal(JOURNAL)
-    try:
-        return COMMANDS[args.command](client, db)
     except HelpdeskError as exc:
         print(f"Helpdesk error: {type(exc).__name__}: {exc}")
         return 1
+    except (anthropic.AuthenticationError, anthropic.PermissionDeniedError) as exc:
+        print(f"Model API refused the credentials ({type(exc).__name__}); check ANTHROPIC_API_KEY.")
+        return 2
