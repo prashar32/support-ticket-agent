@@ -190,3 +190,41 @@ def test_handoff_note_is_capped():
 )
 def test_detect_language(text, lang):
     assert rules.detect_language(text) == lang
+
+
+@pytest.mark.parametrize(
+    "flag, model_priority, expected",
+    [
+        ("security", "P3", "P1"),
+        ("legal_threat", "P4", "P1"),
+        ("refund", "P4", "P2"),
+        ("cancellation_or_contract", "P3", "P2"),
+        ("churn_threat", "P4", "P2"),
+        ("personal_data", "P3", "P2"),
+        ("payment_details", "P4", "P2"),
+        ("refund", "P1", "P1"),  # a floor never lowers
+        ("personal_data", "P2", "P2"),
+        ("multiple_requests", "P4", "P4"),  # not a floor topic
+    ],
+)
+def test_priority_floor_from_model_flag(flag, model_priority, expected):
+    _, body, _ = rules.apply(ticket(), decision(flags=[flag], priority=model_priority), FAQ)
+    assert body["priority"] == expected
+    raised = f"Priority raised from {model_priority} to {expected} by code."
+    assert (raised in body["reason"]) == (expected != model_priority)
+
+
+def test_priority_floor_from_keyword_and_payment_details_in_ticket():
+    _, body, _ = rules.apply(ticket("Ons account is gehackt!"), decision(priority="P4"), FAQ)
+    assert body["priority"] == "P1"  # keyword backstop, model gave no flag
+    _, body, _ = rules.apply(ticket("Mijn IBAN is NL91ABNA0417164300"), decision(priority="P4"), FAQ)
+    assert body["priority"] == "P2" and "0417164300" not in body["reason"]
+
+
+def test_highest_floor_wins():
+    d = decision(flags=["refund", "legal_threat"], priority="P4")
+    assert rules.apply(ticket(), d, FAQ)[1]["priority"] == "P1"
+
+
+def test_no_floor_topic_keeps_model_priority():
+    assert rules.apply(ticket(), decision(priority="P4"), FAQ)[1]["priority"] == "P4"

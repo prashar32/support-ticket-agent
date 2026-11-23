@@ -10,6 +10,8 @@ apply(ticket, decision, faq) -> (action, body, failed_checks)
 4. Confidence below 0.7 -> handoff.
 5. Several requests where any part needs a human -> handoff.
 6. Close without a spam or empty flag -> handoff.
+7. Priority floors from the brief's definitions: security or legal risk -> at least P1; money, the
+   contract or personal data -> at least P2. Floors only raise the priority, never lower it.
 """
 
 import re
@@ -19,6 +21,11 @@ MIN_CONFIDENCE = 0.7
 NOTE_LIMIT = 600
 ALWAYS_HUMAN = ("refund", "cancellation_or_contract", "personal_data", "security", "legal_threat",
                 "churn_threat")  # fmt: skip
+
+# Lowest allowed priority per topic (P1 is highest). P1: "a security or legal risk". P2: "money or
+# the contract is involved"; personal data requests are treated the same way.
+PRIORITY_FLOORS = {"security": "P1", "legal_threat": "P1", "refund": "P2", "cancellation_or_contract": "P2",
+                   "churn_threat": "P2", "personal_data": "P2", "payment_details": "P2"}  # fmt: skip
 
 # Keyword backstop. Matched on lowercased text with accents removed (so "beeindig" matches
 # "beeindigen" written with a diaeresis). Stems are chosen to avoid FAQ topics: no bare "contract"
@@ -204,6 +211,11 @@ def reply_failures(ticket: dict, d: dict, faq: dict[str, str]) -> list[str]:
     return failed + grounding_failures(draft, cited, text)
 
 
+def priority_floor(priority: str, topics: list[str]) -> str:
+    """The most urgent of the model's priority and the floors of the topics ("P1" < "P2")."""
+    return min([priority, *(PRIORITY_FLOORS[t] for t in topics if t in PRIORITY_FLOORS)])
+
+
 def apply(ticket: dict, d: dict, faq: dict[str, str]) -> tuple[str, dict, list[str]]:
     text, flags, action = ticket_text(ticket), set(d["flags"]), d["action"]
     keywords = keyword_topics(text)
@@ -213,7 +225,8 @@ def apply(ticket: dict, d: dict, faq: dict[str, str]) -> tuple[str, dict, list[s
         failed.append("human_flag")
     if keywords:
         failed.append("human_keyword")
-    if "payment_details" in flags or has_payment_details(text):
+    payment = "payment_details" in flags or has_payment_details(text)
+    if payment:
         failed.append("payment_details")
     if action == "reply":
         failed += reply_failures(ticket, d, faq)
@@ -227,6 +240,11 @@ def apply(ticket: dict, d: dict, faq: dict[str, str]) -> tuple[str, dict, list[s
     body = {k: d[k] for k in ("language", "category", "priority")}
     body["confidence"] = round(min(max(float(d["confidence"]), 0.0), 1.0), 2)
     body["reason"] = redact(d["reason"])
+    floor_topics = topics + (["payment_details"] if payment else [])
+    floored = priority_floor(d["priority"], floor_topics)
+    if floored != d["priority"]:
+        body["priority"] = floored
+        body["reason"] += f" Priority raised from {d['priority']} to {floored} by code."
     escalated_from = action if failed and action != "handoff" else None
     if escalated_from:
         action = "handoff"
