@@ -90,6 +90,6 @@ def test_key_and_email_not_in_repr():
 
 
 def test_is_handled():
-    assert not is_handled({"id": "T1", "status": "open", "handled": None})
-    assert is_handled({"id": "T1", "status": "handled", "handled": {"action": "reply"}})
+    assert not is_handled({"id": "T1", "handled": None})
+    assert is_handled({"id": "T1", "handled": {"action": "reply"}})
     assert not is_handled({"id": "T1"})

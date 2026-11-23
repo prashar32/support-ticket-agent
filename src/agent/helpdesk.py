@@ -49,13 +49,9 @@ class ApiError(HelpdeskError):
 def is_handled(ticket: dict) -> bool:
     """True if GET /tickets/{id} shows the ticket already has a decision.
 
-    The exact shape of a handled ticket is not documented; this accepts a
-    status other than "open" or any non-empty handling field.
+    Seen live: an open ticket has "handled": null. A handled one has a non-empty value there.
     """
-    status = ticket.get("status")
-    if status is not None and status != "open":
-        return True
-    return any(ticket.get(key) for key in ("handled", "handling", "decision", "handled_at"))
+    return bool(ticket.get("handled"))
 
 
 def _retry_after(resp: httpx.Response) -> float:

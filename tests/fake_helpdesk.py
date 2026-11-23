@@ -110,7 +110,7 @@ class FakeHelpdesk:
 
         parts = path.strip("/").split("/")
         if method == "GET" and parts == ["status"]:
-            return _json(200, {"mode": "practice", "open": self._open_count(), "handled": len(self.handled)})
+            return _json(200, self._status())
         if method == "GET" and parts == ["tickets"]:
             return self._page(request.url.params)
         if method == "GET" and len(parts) == 2 and parts[0] == "tickets":
@@ -119,8 +119,12 @@ class FakeHelpdesk:
             return self._decide(parts[1], parts[2], json.loads(request.content or b"{}"))
         if method == "POST" and parts == ["practice", "reset"]:
             self.handled.clear()
-            return _json(200, {"reset": True, "open": self._open_count()})
+            return _json(200, {"reset": True, **self._status()})
         return _json(404, {"error": "not_found"})
+
+    def _status(self) -> dict:  # same keys as the live GET /status
+        return {"mode": "practice", "candidate": "Test Candidate", "endpoints": [], "live_ends_at": None,
+                "open_tickets": self._open_count(), "handled_tickets": len(self.handled)}  # fmt: skip
 
     def _open_count(self) -> int:
         return len(self.tickets) - len(self.handled)
@@ -136,9 +140,8 @@ class FakeHelpdesk:
     def _one(self, ticket_id: str) -> httpx.Response:
         if ticket_id not in self.tickets:
             return _json(404, {"error": "not_found"})
-        handled = self.handled.get(ticket_id)
-        return _json(200, {**self.tickets[ticket_id], "status": "handled" if handled else "open",
-                           "handled": handled})  # fmt: skip
+        # Live shape: the ticket plus "handled" (null while open).
+        return _json(200, {**self.tickets[ticket_id], "handled": self.handled.get(ticket_id)})
 
     def _decide(self, ticket_id: str, action: str, body: dict) -> httpx.Response:
         if ticket_id not in self.tickets or action not in ("reply", "handoff", "close"):
