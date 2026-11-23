@@ -64,7 +64,8 @@ AVG in Dutch); possible security incidents; legal threats; customers threatening
   Never repeat card numbers, IBANs or other payment details.
   The reply states only what the cited entries say. No promises of follow-up, investigation, contact
   or timelines (not "we will look into it", "we will get back to you" or "if it keeps happening,
-  let us know and we will fix it"), and no advice the entries do not give. If the customer needs more
+  let us know and we will fix it"), and no advice the entries do not give. The reply may tell the
+  customer to meet a requirement the cited entry states. If the customer needs more
   than the entries offer, that part is unanswered: set its faq_id to null and hand off.
 - english_backtranslation: a faithful, literal English translation of draft_reply, for reviewers who
   do not read Dutch. "" when there is no draft.
