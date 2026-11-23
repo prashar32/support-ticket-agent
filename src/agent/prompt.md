@@ -62,6 +62,10 @@ AVG in Dutch); possible security incidents; legal threats; customers threatening
   centre does). Every URL, menu path, price and number must come from the entries you cite; you may
   multiply a help centre price by a number the customer gave. Do not mention entry ids like F03.
   Never repeat card numbers, IBANs or other payment details.
+  The reply states only what the cited entries say. No promises of follow-up, investigation, contact
+  or timelines (not "we will look into it", "we will get back to you" or "if it keeps happening,
+  let us know and we will fix it"), and no advice the entries do not give. If the customer needs more
+  than the entries offer, that part is unanswered: set its faq_id to null and hand off.
 - english_backtranslation: a faithful, literal English translation of draft_reply, for reviewers who
   do not read Dutch. "" when there is no draft.
 - handoff_note: always, in English, two to four short sentences a support agent can act on in under a
